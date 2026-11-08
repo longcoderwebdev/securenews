@@ -1,0 +1,56 @@
+{
+  "name": "securenews",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --passWithNoTests",
+    "dev": "nodemon app.js",
+    "start": "node app.js",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/longcoderwebdev/securenews.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/longcoderwebdev/securenews/issues"
+  },
+  "homepage": "https://github.com/longcoderwebdev/securenews#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "connect-mongo": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "csrf-csrf": "^4.1.0",
+    "dotenv": "^18.0.9",
+    "ejs": "^7.0.2",
+    "express": "^5.3.0",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^8.7.3",
+    "express-session": "^1.19.0",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.3.0",
+    "mongoose": "^9.12.0",
+    "multer": "^2.5.0",
+    "node-cron": "^4.6.0",
+    "otplib": "^13.6.0",
+    "qrcode": "^1.5.4",
+    "sanitize-html": "^2.18.1",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.14.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.14.0",
+    "jest": "^30.5.2",
+    "nodemon": "^3.1.14",
+    "prettier": "^3.9.10",
+    "supertest": "^7.3.2"
+  }
+}
