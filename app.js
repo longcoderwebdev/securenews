@@ -3,6 +3,11 @@ const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
 const connectDB = require('./config/db');
+const buildSession = require('./config/session');
+const csrf = require('./middlewares/csrf');
+const locals = require('./middlewares/locals');
+const { generalLimiter } = require('./middlewares/rateLimit');
+const routes = require('./routes');
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
 
 const app = express();
@@ -17,7 +22,12 @@ app.use(express.json({ limit: '100kb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
-app.get('/', (_req, res) => res.send('SecureNews đang chạy'));
+
+app.use(generalLimiter);
+app.use(buildSession());
+app.use(csrf);
+app.use(locals);
+app.use('/', routes);
 
 app.use(notFound);
 app.use(errorHandler);
