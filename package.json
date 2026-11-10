@@ -8,7 +8,8 @@
     "dev": "nodemon app.js",
     "start": "node app.js",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "seed": "node scripts/seed.js"
   },
   "repository": {
     "type": "git",
