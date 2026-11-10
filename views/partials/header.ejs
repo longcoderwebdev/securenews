@@ -11,6 +11,7 @@
   <a href="/" class="brand">SecureNews</a>
   <% if (currentUser) { %>
     <% if (currentUser.role === 'admin') { %><a href="/admin">Quản trị</a><% } %>
+    <% if (currentUser.role === 'editor') { %><a href="/editor/articles">Bài viết của tôi</a><% } %>
     <span><%= currentUser.fullName %> (<%= currentUser.role %>)</span>
     <form method="post" action="/auth/logout" class="inline">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">

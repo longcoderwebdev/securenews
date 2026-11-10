@@ -1,0 +1,38 @@
+<%- include('../partials/header') %>
+<h1><%= article ? 'Sửa bài viết' : 'Soạn bài mới' %></h1>
+<% const action = article ? '/editor/articles/' + article._id : '/editor/articles'; %>
+<form method="post" action="<%= action %>?_csrf=<%= csrfToken %>" enctype="multipart/form-data" class="wide" novalidate>
+  <label for="title">Tiêu đề</label>
+  <input id="title" name="title" type="text" value="<%= values.title || '' %>" required>
+  <% if (errors.title) { %><p class="error"><%= errors.title %></p><% } %>
+
+  <label for="category">Danh mục</label>
+  <select id="category" name="category" required>
+    <option value="">-- Chọn danh mục --</option>
+    <% categories.forEach((c) => { %>
+      <option value="<%= c._id %>" <%= String(c._id) === String(values.category) ? 'selected' : '' %>><%= c.name %></option>
+    <% }) %>
+  </select>
+  <% if (errors.category) { %><p class="error"><%= errors.category %></p><% } %>
+
+  <label for="coverImage">Ảnh bìa (JPG, PNG hoặc WebP, tối đa 2 MB)</label>
+  <% if (article && article.coverImage) { %>
+    <img src="/uploads/<%= article.coverImage %>" alt="Ảnh bìa hiện tại" class="cover">
+    <p class="hint">Chọn ảnh mới nếu muốn thay.</p>
+  <% } %>
+  <input id="coverImage" name="coverImage" type="file" accept="image/jpeg,image/png,image/webp">
+  <% if (errors.coverImage) { %><p class="error"><%= errors.coverImage %></p><% } %>
+
+  <label for="summary">Tóm tắt (tối đa 300 ký tự)</label>
+  <textarea id="summary" name="summary" rows="3"><%= values.summary || '' %></textarea>
+  <% if (errors.summary) { %><p class="error"><%= errors.summary %></p><% } %>
+
+  <label for="content">Nội dung</label>
+  <textarea id="content" name="content" rows="12" required><%= values.content || '' %></textarea>
+  <p class="hint">Cho phép các thẻ: p, br, strong, em, u, ul, ol, li, h2, h3, blockquote, a. Mọi thứ khác bị loại bỏ khi lưu.</p>
+  <% if (errors.content) { %><p class="error"><%= errors.content %></p><% } %>
+
+  <button type="submit">Lưu bản nháp</button>
+</form>
+<p><a href="/editor/articles">Quay lại danh sách</a></p>
+<%- include('../partials/footer') %>

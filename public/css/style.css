@@ -15,3 +15,13 @@ button { margin-top: 16px; padding: 8px 16px; }
 table { width: 100%; border-collapse: collapse; margin-top: 12px; }
 th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
 .actions { display: flex; gap: 12px; align-items: center; }
+textarea, select { width: 100%; padding: 8px; box-sizing: border-box; font: inherit; }
+form.wide { max-width: 760px; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+.badge-draft { background: #eee; color: #444; }
+.badge-pending { background: #fff4d6; color: #8a5a00; }
+.badge-published { background: #e6f4ea; color: #1e6b34; }
+.badge-rejected { background: #fdecea; color: #b00020; }
+.cover { max-width: 240px; display: block; margin-top: 8px; }
+.pager { display: flex; gap: 12px; align-items: center; margin-top: 12px; }
+.hint { color: #666; font-size: 13px; margin: 4px 0 0; }

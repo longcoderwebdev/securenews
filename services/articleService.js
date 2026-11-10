@@ -6,6 +6,7 @@ const AppError = require('../utils/AppError');
 const slugify = require('../utils/slugify');
 const sanitizeContent = require('../utils/sanitizeContent');
 const audit = require('./auditService');
+const imageService = require('./imageService');
 
 const EDITABLE = ['draft', 'rejected'];
 const STATUSES = ['draft', 'pending', 'published', 'rejected'];
@@ -62,23 +63,38 @@ async function findOwned(id, user, meta, allowedStatuses) {
   return article;
 }
 
-async function createDraft(user, input, meta) {
+async function createDraft(user, input, meta, file) {
   const data = await normalizeInput(input);
   const slug = `${slugify(data.title) || 'bai-viet'}-${crypto.randomBytes(3).toString('hex')}`;
-  const article = await Article.create({ ...data, slug, author: user.id, status: 'draft' });
+  const coverImage = file ? await imageService.saveCover(file) : undefined;
+
+  let article;
+  try {
+    article = await Article.create({ ...data, slug, coverImage, author: user.id, status: 'draft' });
+  } catch (err) {
+    await imageService.removeCover(coverImage);
+    throw err;
+  }
   await audit.record({ user: user.id, action: 'ARTICLE_CREATE', target: `Article:${article.id}`, ...meta });
   return article;
 }
 
-async function updateDraft(id, user, input, meta) {
-  await findOwned(id, user, meta, EDITABLE);
+async function updateDraft(id, user, input, meta, file) {
+  const current = await findOwned(id, user, meta, EDITABLE);
   const data = await normalizeInput(input);
+  const newCover = file ? await imageService.saveCover(file) : undefined;
+  const changes = newCover ? { ...data, coverImage: newCover } : data;
+
   const updated = await Article.findOneAndUpdate(
     { _id: id, status: { $in: EDITABLE } },
-    { $set: data },
+    { $set: changes },
     { new: true, runValidators: true }
   );
-  if (!updated) throw new AppError(409, 'Trạng thái bài viết không cho phép thao tác này');
+  if (!updated) {
+    await imageService.removeCover(newCover);
+    throw new AppError(409, 'Trạng thái bài viết không cho phép thao tác này');
+  }
+  if (newCover) await imageService.removeCover(current.coverImage);
   await audit.record({ user: user.id, action: 'ARTICLE_UPDATE', target: `Article:${id}`, ...meta });
   return updated;
 }
