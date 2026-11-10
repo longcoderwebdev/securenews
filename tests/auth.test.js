@@ -1,7 +1,7 @@
 process.env.NODE_ENV = 'test';
 process.env.SESSION_SECRET = 'test-secret';
 process.env.BCRYPT_ROUNDS = '4';
-process.env.MONGO_URI = 'mongodb://127.0.0.1:27017/securenews_test';
+process.env.MONGO_URI = 'mongodb://127.0.0.1:27017/securenews_test_auth';
 
 const { describe, test, before, beforeEach, after } = require('node:test');
 const assert = require('node:assert/strict');
