@@ -1,0 +1,45 @@
+<%- include('../partials/header') %>
+<h1>Quản lý danh mục</h1>
+
+<h2>Thêm danh mục</h2>
+<form method="post" action="/admin/categories" novalidate>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label for="name">Tên danh mục</label>
+  <input id="name" name="name" type="text" value="<%= values.name || '' %>" required>
+  <% if (errors.name) { %><p class="error"><%= errors.name %></p><% } %>
+
+  <label for="description">Mô tả (không bắt buộc)</label>
+  <input id="description" name="description" type="text" value="<%= values.description || '' %>">
+  <% if (errors.description) { %><p class="error"><%= errors.description %></p><% } %>
+
+  <button type="submit">Thêm</button>
+</form>
+
+<h2>Danh sách (<%= categories.length %>)</h2>
+<% if (categories.length === 0) { %>
+  <p>Chưa có danh mục nào.</p>
+<% } else { %>
+  <table>
+    <thead>
+      <tr><th>Tên</th><th>Đường dẫn</th><th>Số bài</th><th>Thao tác</th></tr>
+    </thead>
+    <tbody>
+      <% categories.forEach((c) => { %>
+        <tr>
+          <td><%= c.name %></td>
+          <td><%= c.slug %></td>
+          <td><%= c.articleCount %></td>
+          <td class="actions">
+            <a href="/admin/categories/<%= c._id %>/edit">Sửa</a>
+            <form method="post" action="/admin/categories/<%= c._id %>/delete" class="inline" data-confirm="Bạn chắc chắn muốn xóa danh mục này?">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit">Xóa</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+<p><a href="/admin">Về bảng điều khiển</a></p>
+<%- include('../partials/footer') %>
