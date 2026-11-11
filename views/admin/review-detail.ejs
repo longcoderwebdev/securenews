@@ -1,0 +1,39 @@
+<%- include('../partials/header') %>
+<h1><%= article.title %></h1>
+<p class="meta">
+  Tác giả: <%= article.author ? article.author.fullName + ' (' + article.author.email + ')' : '(đã xóa)' %><br>
+  Danh mục: <%= article.category ? article.category.name : '(đã xóa)' %><br>
+  Trạng thái: <span class="badge badge-<%= article.status %>"><%= statusLabels[article.status] %></span>
+  <% if (article.submittedAt) { %><br>Gửi duyệt lúc: <%= new Date(article.submittedAt).toLocaleString('vi-VN') %><% } %>
+</p>
+
+<% if (article.coverImage) { %>
+  <img src="/uploads/<%= article.coverImage %>" alt="Ảnh bìa" class="cover">
+<% } %>
+<% if (article.summary) { %><p><em><%= article.summary %></em></p><% } %>
+
+<div class="article-body"><%- safeContent %></div>
+
+<% if (article.status === 'pending') { %>
+  <div class="review-actions">
+    <form method="post" action="/admin/review/<%= article._id %>/approve" data-confirm="Duyệt và xuất bản bài viết này?">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit">Duyệt và xuất bản</button>
+    </form>
+
+    <form method="post" action="/admin/review/<%= article._id %>/reject" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label for="reason">Lý do từ chối (5 đến 300 ký tự)</label>
+      <textarea id="reason" name="reason" rows="3"><%= values.reason || '' %></textarea>
+      <% if (errors.reason) { %><p class="error"><%= errors.reason %></p><% } %>
+      <button type="submit">Từ chối</button>
+    </form>
+  </div>
+<% } else { %>
+  <p class="hint">Bài viết không còn ở trạng thái chờ duyệt nên không thể xử lý thêm.</p>
+  <% if (article.status === 'rejected' && article.rejectReason) { %>
+    <p class="hint">Lý do từ chối: <%= article.rejectReason %></p>
+  <% } %>
+<% } %>
+<p><a href="/admin/review">Quay lại danh sách</a></p>
+<%- include('../partials/footer') %>

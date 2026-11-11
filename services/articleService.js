@@ -152,7 +152,7 @@ async function listPending({ page, limit } = {}) {
 async function getForReview(id) {
   if (!mongoose.isValidObjectId(id)) throw new AppError(404, 'Không tìm thấy bài viết');
   const article = await Article.findById(id).populate('author', 'fullName email').populate('category', 'name');
-  if (!article) throw new AppError(404, 'Không tìm thấy bài viết');
+  if (!article || article.status === 'draft') throw new AppError(404, 'Không tìm thấy bài viết');
   return article;
 }
 

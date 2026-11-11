@@ -25,3 +25,7 @@ form.wide { max-width: 760px; }
 .cover { max-width: 240px; display: block; margin-top: 8px; }
 .pager { display: flex; gap: 12px; align-items: center; margin-top: 12px; }
 .hint { color: #666; font-size: 13px; margin: 4px 0 0; }
+.meta { color: #555; font-size: 14px; line-height: 1.6; }
+.article-body { margin: 16px 0; line-height: 1.6; }
+.review-actions { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; margin-top: 24px; }
+.review-actions form { flex: 1; min-width: 240px; }
