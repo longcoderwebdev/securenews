@@ -88,7 +88,7 @@ async function updateDraft(id, user, input, meta, file) {
   const updated = await Article.findOneAndUpdate(
     { _id: id, status: { $in: EDITABLE } },
     { $set: changes },
-    { new: true, runValidators: true }
+    { returnDocument: 'after', runValidators: true }
   );
   if (!updated) {
     await imageService.removeCover(newCover);
