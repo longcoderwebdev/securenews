@@ -38,3 +38,7 @@ form.wide { max-width: 760px; }
 .article-card { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #ddd; }
 .article-card h2 { margin: 0 0 4px; font-size: 20px; }
 .thumb { width: 160px; height: 100px; object-fit: cover; flex: none; }
+
+.comments { margin-top: 32px; border-top: 1px solid #ddd; padding-top: 16px; }
+.comment { padding: 12px 0; border-bottom: 1px solid #eee; }
+.comment-text { white-space: pre-line; margin: 4px 0 8px; }

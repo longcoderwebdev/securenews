@@ -12,5 +12,38 @@
   <% if (article.summary) { %><p><em><%= article.summary %></em></p><% } %>
   <div class="article-body"><%- safeContent %></div>
 </article>
+
+<section class="comments">
+  <h2>Bình luận (<%= commentTotal %>)</h2>
+
+  <% if (currentUser) { %>
+    <form method="post" action="/articles/<%= encodeURIComponent(article.slug) %>/comments" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label for="content">Viết bình luận (2 đến 1000 ký tự)</label>
+      <textarea id="content" name="content" rows="3" maxlength="1000" required></textarea>
+      <button type="submit">Gửi bình luận</button>
+    </form>
+  <% } else { %>
+    <p><a href="/auth/login">Đăng nhập</a> để bình luận.</p>
+  <% } %>
+
+  <% if (comments.length === 0) { %>
+    <p class="hint">Chưa có bình luận nào.</p>
+  <% } %>
+
+  <% comments.forEach((c) => { %>
+    <div class="comment">
+      <p class="meta"><%= c.user ? c.user.fullName : '(đã xóa)' %> | <%= new Date(c.createdAt).toLocaleString('vi-VN') %></p>
+      <p class="comment-text"><%= c.content %></p>
+      <% if (currentUser && (currentUser.role === 'editor' || currentUser.role === 'admin')) { %>
+        <form method="post" action="/comments/<%= c._id %>/hide" class="inline" data-confirm="Ẩn bình luận này?">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button type="submit">Ẩn</button>
+        </form>
+      <% } %>
+    </div>
+  <% }) %>
+</section>
+
 <p><a href="/articles">Quay lại danh sách</a></p>
 <%- include('../partials/footer') %>

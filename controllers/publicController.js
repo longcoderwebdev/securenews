@@ -1,5 +1,6 @@
 const asyncHandler = require('../utils/asyncHandler');
 const publicService = require('../services/publicService');
+const commentService = require('../services/commentService');
 const sanitizeContent = require('../utils/sanitizeContent');
 
 exports.list = asyncHandler(async (req, res) => {
@@ -30,9 +31,12 @@ exports.list = asyncHandler(async (req, res) => {
 
 exports.show = asyncHandler(async (req, res) => {
   const article = await publicService.getBySlug(req.params.slug);
+  const comments = await commentService.listVisible(article._id);
   res.render('public/detail', {
     title: article.title,
     article,
     safeContent: sanitizeContent(article.content), // lọc thêm một lần nữa khi xuất ra
+    comments: comments.items,
+    commentTotal: comments.total,
   });
 });
