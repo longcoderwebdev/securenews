@@ -9,6 +9,7 @@ const csrf = require('./middlewares/csrf');
 const locals = require('./middlewares/locals');
 const { generalLimiter } = require('./middlewares/rateLimit');
 const routes = require('./routes');
+const backupJob = require('./jobs/backupJob');
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
 
 const app = express();
@@ -36,6 +37,7 @@ app.use(errorHandler);
 
 async function start() {
   await connectDB();
+  backupJob.start();
   const port = process.env.PORT || 3000;
   app.listen(port, () => console.log(`Server chạy tại http://localhost:${port}`));
 }

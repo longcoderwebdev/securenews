@@ -1,9 +1,11 @@
 const router = require('express').Router();
 const { requireRole } = require('../middlewares/auth');
+const { passwordLimiter } = require('../middlewares/rateLimit');
 const categoryController = require('../controllers/categoryController');
 const reviewController = require('../controllers/reviewController');
 const userAdminController = require('../controllers/userAdminController');
 const auditLogController = require('../controllers/auditLogController');
+const backupController = require('../controllers/backupController');
 
 router.use(requireRole('admin'));
 
@@ -26,5 +28,9 @@ router.post('/users/:id/lock', userAdminController.lock);
 router.post('/users/:id/unlock', userAdminController.unlock);
 
 router.get('/audit-logs', auditLogController.list);
+
+router.get('/backups', backupController.list);
+router.post('/backups', backupController.create);
+router.post('/backups/:id/restore', passwordLimiter, backupController.restore);
 
 module.exports = router;

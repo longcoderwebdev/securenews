@@ -1,0 +1,52 @@
+<%- include('../partials/header') %>
+<h1>Sao lưu và phục hồi</h1>
+<p class="hint">
+  Bản sao lưu được nén, mã hóa AES-256-GCM và kiểm tra toàn vvẹn bằng SHA-256. Nhật ký hoạt động được sao lưu
+  nhưng không bị ghi đè khi phục hồi. Ảnh bìa trong thư mục public/uploads không nằm trong bản sao lưu này.
+</p>
+
+<form method="post" action="/admin/backups" class="inline" data-confirm="Tạo bản sao lưu ngay bây giờ?">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <button type="submit">Sao lưu ngay</button>
+</form>
+
+<% const fmt = (n) => (n >= 1048576 ? (n / 1048576).toFixed(2) + ' MB' : ((n || 0) / 1024).toFixed(1) + ' KB'); %>
+<% const labels = { daily: 'Hằng ngày', weekly: 'Hằng tuần', monthly: 'Hằng tháng', manual: 'Thủ công' }; %>
+
+<% if (items.length === 0) { %>
+  <p>Chưa có bản sao lưu nào.</p>
+<% } else { %>
+  <table>
+    <thead>
+      <tr><th>Thời gian</th><th>Loại</th><th>Dung lượng</th><th>Vị trí</th><th>Trạng thái</th><th>Checksum</th><th>Người tạo</th><th>Phục hồi</th></tr>
+    </thead>
+    <tbody>
+      <% items.forEach((b) => { %>
+        <tr>
+          <td><%= new Date(b.createdAt).toLocaleString('vi-VN') %></td>
+          <td><%= labels[b.type] %></td>
+          <td><%= fmt(b.sizeBytes) %></td>
+          <td><%= b.status === 'success' ? (b.location === 'offsite' ? 'Cục bộ và ngoài tuyến' : 'Cục bộ') : '-' %></td>
+          <td>
+            <% if (b.status === 'success') { %><span class="badge badge-published">Thành công</span>
+            <% } else { %><span class="badge badge-rejected">Thất bại</span><p class="hint"><%= b.error || '' %></p><% } %>
+          </td>
+          <td class="checksum"><%= b.checksum && b.checksum !== '-' ? b.checksum.slice(0, 12) : '' %></td>
+          <td><%= b.createdBy ? b.createdBy.fullName : 'Hệ thống' %></td>
+          <td>
+            <% if (b.status === 'success') { %>
+              <form method="post" action="/admin/backups/<%= b._id %>/restore" class="inline restore-form"
+                    data-confirm="Phục hồi sẽ ghi đè dữ liệu hiện tại (trừ nhật ký) và đăng xuất bạn. Một bản sao lưu an toàn sẽ được tạo trước. Tiếp tục?">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <input type="password" name="password" placeholder="Mật khẩu của bạn" autocomplete="current-password" required>
+                <button type="submit">Phục hồi</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+<p><a href="/admin">Về bảng điều khiển</a></p>
+<%- include('../partials/footer') %>
