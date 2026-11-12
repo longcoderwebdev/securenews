@@ -52,3 +52,7 @@ form.filters { max-width: none; display: grid; grid-template-columns: repeat(aut
 .restore-form { display: flex; gap: 6px; align-items: center; }
 .restore-form input { width: 150px; }
 .restore-form button { margin: 0; }
+
+.error-page { max-width: 520px; margin: 80px auto; text-align: center; }
+.error-code { font-size: 64px; font-weight: 700; margin: 0; color: #888; }
+code { background: #f3f3f3; padding: 2px 6px; border-radius: 4px; }
