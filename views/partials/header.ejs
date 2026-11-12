@@ -12,7 +12,7 @@
   <% if (currentUser) { %>
     <% if (currentUser.role === 'admin') { %><a href="/admin">Quản trị</a><% } %>
     <% if (currentUser.role === 'editor') { %><a href="/editor/articles">Bài viết của tôi</a><% } %>
-    <span><%= currentUser.fullName %> (<%= currentUser.role %>)</span>
+    <a href="/profile"><%= currentUser.fullName %> (<%= currentUser.role %>)</a>
     <form method="post" action="/auth/logout" class="inline">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <button type="submit">Đăng xuất</button>

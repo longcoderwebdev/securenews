@@ -1,0 +1,37 @@
+<%- include('../partials/header') %>
+<h1>Hồ sơ cá nhân</h1>
+<p class="meta">
+  Email: <%= profile.email %><br>
+  Vai trò: <%= profile.role %><br>
+  Tham gia: <%= new Date(profile.createdAt).toLocaleDateString('vi-VN') %>
+</p>
+
+<h2>Thông tin cá nhân</h2>
+<form method="post" action="/profile" novalidate>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label for="fullName">Họ tên</label>
+  <input id="fullName" name="fullName" type="text" value="<%= values.fullName || '' %>" required>
+  <% if (errors.fullName) { %><p class="error"><%= errors.fullName %></p><% } %>
+  <button type="submit">Lưu họ tên</button>
+</form>
+
+<h2>Đổi mật khẩu</h2>
+<form method="post" action="/profile/password" novalidate>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+  <label for="currentPassword">Mật khẩu hiện tại</label>
+  <input id="currentPassword" name="currentPassword" type="password" autocomplete="current-password" required>
+  <% if (errors.currentPassword) { %><p class="error"><%= errors.currentPassword %></p><% } %>
+
+  <label for="newPassword">Mật khẩu mới (10 đến 72 ký tự, có chữ và số)</label>
+  <input id="newPassword" name="newPassword" type="password" autocomplete="new-password" required>
+  <% if (errors.newPassword) { %><p class="error"><%= errors.newPassword %></p><% } %>
+
+  <label for="confirmPassword">Nhập lại mật khẩu mới</label>
+  <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required>
+  <% if (errors.confirmPassword) { %><p class="error"><%= errors.confirmPassword %></p><% } %>
+
+  <button type="submit">Đổi mật khẩu</button>
+</form>
+<p class="hint">Sau khi đổi mật khẩu, các thiết bị khác sẽ bị đăng xuất.</p>
+<%- include('../partials/footer') %>

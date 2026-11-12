@@ -42,3 +42,8 @@ form.wide { max-width: 760px; }
 .comments { margin-top: 32px; border-top: 1px solid #ddd; padding-top: 16px; }
 .comment { padding: 12px 0; border-bottom: 1px solid #eee; }
 .comment-text { white-space: pre-line; margin: 4px 0 8px; }
+
+.search select { width: auto; }
+.inline select { width: auto; margin-right: 4px; }
+form.filters { max-width: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px 16px; align-items: end; }
+.filters button { margin-top: 0; }
