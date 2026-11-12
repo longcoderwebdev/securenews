@@ -47,3 +47,8 @@ form.wide { max-width: 760px; }
 .inline select { width: auto; margin-right: 4px; }
 form.filters { max-width: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px 16px; align-items: end; }
 .filters button { margin-top: 0; }
+
+.checksum { font-family: monospace; font-size: 12px; }
+.restore-form { display: flex; gap: 6px; align-items: center; }
+.restore-form input { width: 150px; }
+.restore-form button { margin: 0; }
