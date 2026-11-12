@@ -1,0 +1,79 @@
+<%- include('../partials/header') %>
+<h1>Quản lý người dùng</h1>
+
+<form method="get" action="/admin/users" class="search" role="search">
+  <input type="search" name="q" value="<%= q %>" placeholder="Tìm theo tên hoặc email" maxlength="100">
+  <select name="role">
+    <option value="">Mọi vai trò</option>
+    <% ['user', 'editor', 'admin'].forEach((r) => { %>
+      <option value="<%= r %>" <%= r === role ? 'selected' : '' %>><%= r %></option>
+    <% }) %>
+  </select>
+  <button type="submit">Lọc</button>
+</form>
+
+<% if (items.length === 0) { %>
+  <p>Không có người dùng phù hợp.</p>
+<% } else { %>
+  <table>
+    <thead>
+      <tr><th>Họ tên</th><th>Email</th><th>Vai trò</th><th>Trạng thái</th><th>Đăng nhập gần nhất</th><th>Thao tác</th></tr>
+    </thead>
+    <tbody>
+      <% items.forEach((u) => { %>
+        <% const isSelf = String(u._id) === String(selfId); %>
+        <% const tempLocked = u.lockUntil && new Date(u.lockUntil) > new Date(); %>
+        <tr>
+          <td><%= u.fullName %><%= isSelf ? ' (bạn)' : '' %></td>
+          <td><%= u.email %></td>
+          <td>
+            <% if (isSelf) { %>
+              <%= u.role %>
+            <% } else { %>
+              <form method="post" action="/admin/users/<%= u._id %>/role" class="inline">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <select name="role">
+                  <% ['user', 'editor', 'admin'].forEach((r) => { %>
+                    <option value="<%= r %>" <%= r === u.role ? 'selected' : '' %>><%= r %></option>
+                  <% }) %>
+                </select>
+                <button type="submit">Đổi</button>
+              </form>
+            <% } %>
+          </td>
+          <td>
+            <% if (!u.isActive) { %><span class="badge badge-rejected">Đã khóa</span>
+            <% } else if (tempLocked) { %><span class="badge badge-pending">Khóa tạm thời</span>
+            <% } else { %><span class="badge badge-published">Hoạt động</span><% } %>
+          </td>
+          <td><%= u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString('vi-VN') : 'Chưa đăng nhập' %></td>
+          <td>
+            <% if (!isSelf) { %>
+              <% if (u.isActive && !tempLocked) { %>
+                <form method="post" action="/admin/users/<%= u._id %>/lock" class="inline" data-confirm="Khóa tài khoản này? Người dùng sẽ bị đăng xuất ngay.">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit">Khóa</button>
+                </form>
+              <% } else { %>
+                <form method="post" action="/admin/users/<%= u._id %>/unlock" class="inline" data-confirm="Mở khóa tài khoản này?">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit">Mở khóa</button>
+                </form>
+              <% } %>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <% if (paging.totalPages > 1) { %>
+    <div class="pager">
+      <% if (paging.page > 1) { %><a href="<%= buildUrl(paging.page - 1) %>">Trước</a><% } %>
+      <span>Trang <%= paging.page %> / <%= paging.totalPages %></span>
+      <% if (paging.page < paging.totalPages) { %><a href="<%= buildUrl(paging.page + 1) %>">Sau</a><% } %>
+    </div>
+  <% } %>
+<% } %>
+<p><a href="/admin">Về bảng điều khiển</a></p>
+<%- include('../partials/footer') %>

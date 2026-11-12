@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
     twoFAEnabled: { type: Boolean, default: false },
     twoFASecret: { type: String, select: false },
     lastLoginAt: { type: Date },
+    sessionVersion: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

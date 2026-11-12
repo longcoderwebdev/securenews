@@ -52,7 +52,7 @@ exports.login = asyncHandler(async (req, res) => {
   }
 
   await regenerate(req); // phiên mới sau đăng nhập, chống cố định phiên
-  req.session.user = { id: user.id, role: user.role, fullName: user.fullName };
+  req.session.user = { id: user.id, role: user.role, fullName: user.fullName, v: user.sessionVersion || 0 };
   req.flash('success', 'Đăng nhập thành công');
   return res.redirect('/');
 });

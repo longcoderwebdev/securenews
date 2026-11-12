@@ -4,6 +4,7 @@ const express = require('express');
 const helmet = require('helmet');
 const connectDB = require('./config/db');
 const buildSession = require('./config/session');
+const refreshSessionUser = require('./middlewares/sessionUser');
 const csrf = require('./middlewares/csrf');
 const locals = require('./middlewares/locals');
 const { generalLimiter } = require('./middlewares/rateLimit');
@@ -25,6 +26,7 @@ app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
 app.use(generalLimiter);
 app.use(buildSession());
+app.use(refreshSessionUser);
 app.use(csrf);
 app.use(locals);
 app.use('/', routes);
