@@ -1,8 +1,13 @@
-// const session = require('express-session');
-// const MongoStore = require('connect-mongo');
-
 const session = require('express-session');
-const MongoStore = require('connect-mongo').default || require('connect-mongo'); 
+// const MongoStore = require('connect-mongo');
+const MongoStore = require('connect-mongo').default || require('connect-mongo');
+
+// Mặc định cookie chỉ gửi qua HTTPS khi chạy production.
+// Chạy demo trên HTTP (ví dụ Docker trên máy cá nhân) thì đặt COOKIE_SECURE=false
+function secureCookie() {
+  if (process.env.COOKIE_SECURE) return process.env.COOKIE_SECURE === 'true';
+  return process.env.NODE_ENV === 'production';
+}
 
 function buildSession() {
   const options = {
@@ -14,7 +19,7 @@ function buildSession() {
     cookie: {
       httpOnly: true,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      secure: secureCookie(),
       maxAge: 30 * 60 * 1000,
     },
   };
