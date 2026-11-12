@@ -1,0 +1,16 @@
+<%- include('../partials/header') %>
+<h1>Sửa danh mục</h1>
+<form method="post" action="/admin/categories/<%= category._id %>" novalidate>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label for="name">Tên danh mục</label>
+  <input id="name" name="name" type="text" value="<%= values.name || '' %>" required>
+  <% if (errors.name) { %><p class="error"><%= errors.name %></p><% } %>
+
+  <label for="description">Mô tả</label>
+  <input id="description" name="description" type="text" value="<%= values.description || '' %>">
+  <% if (errors.description) { %><p class="error"><%= errors.description %></p><% } %>
+
+  <button type="submit">Lưu</button>
+</form>
+<p><a href="/admin/categories">Quay lại danh sách</a></p>
+<%- include('../partials/footer') %>

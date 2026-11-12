@@ -1,0 +1,40 @@
+body { font-family: system-ui, sans-serif; margin: 0; }
+.nav { display: flex; gap: 16px; align-items: center; padding: 12px 20px; border-bottom: 1px solid #ddd; }
+.brand { font-weight: 700; margin-right: auto; text-decoration: none; }
+main { max-width: 960px; margin: 24px auto; padding: 0 16px; }
+form:not(.inline) { max-width: 480px; }
+label { display: block; margin-top: 12px; }
+input { width: 100%; padding: 8px; box-sizing: border-box; }
+button { margin-top: 16px; padding: 8px 16px; }
+.inline { display: inline; }
+.inline button { margin: 0; }
+.error { color: #b00020; margin: 4px 0 0; }
+.flash { max-width: 960px; margin: 12px auto; padding: 10px 14px; border-radius: 6px; box-sizing: border-box; }
+.flash-success { background: #e6f4ea; color: #1e6b34; }
+.flash-error { background: #fdecea; color: #b00020; }
+table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
+.actions { display: flex; gap: 12px; align-items: center; }
+textarea, select { width: 100%; padding: 8px; box-sizing: border-box; font: inherit; }
+form.wide { max-width: 760px; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+.badge-draft { background: #eee; color: #444; }
+.badge-pending { background: #fff4d6; color: #8a5a00; }
+.badge-published { background: #e6f4ea; color: #1e6b34; }
+.badge-rejected { background: #fdecea; color: #b00020; }
+.cover { max-width: 240px; display: block; margin-top: 8px; }
+.pager { display: flex; gap: 12px; align-items: center; margin-top: 12px; }
+.hint { color: #666; font-size: 13px; margin: 4px 0 0; }
+.meta { color: #555; font-size: 14px; line-height: 1.6; }
+.article-body { margin: 16px 0; line-height: 1.6; }
+.review-actions { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; margin-top: 24px; }
+.review-actions form { flex: 1; min-width: 240px; }
+
+.search { display: flex; gap: 8px; align-items: center; max-width: 480px; }
+.search button { margin: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 4px 12px; border: 1px solid #ccc; border-radius: 14px; text-decoration: none; font-size: 14px; }
+.chip-active { background: #222; color: #fff; border-color: #222; }
+.article-card { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #ddd; }
+.article-card h2 { margin: 0 0 4px; font-size: 20px; }
+.thumb { width: 160px; height: 100px; object-fit: cover; flex: none; }

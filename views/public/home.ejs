@@ -1,4 +1,45 @@
 <%- include('../partials/header') %>
-<h1>SecureNews</h1>
-<p>Trang chủ sẽ được xây dựng ở module Nội dung.</p>
+<h1>Tin tức</h1>
+
+<form method="get" action="/articles" class="search" role="search">
+  <input type="search" name="q" value="<%= q %>" placeholder="Tìm bài viết" maxlength="100">
+  <% if (activeCategory) { %><input type="hidden" name="category" value="<%= activeCategory %>"><% } %>
+  <button type="submit">Tìm</button>
+</form>
+
+<p class="chips">
+  <a href="/articles" class="chip <%= activeCategory ? '' : 'chip-active' %>">Tất cả</a>
+  <% categories.forEach((c) => { %>
+    <a href="/articles?category=<%= encodeURIComponent(c.slug) %>" class="chip <%= c.slug === activeCategory ? 'chip-active' : '' %>"><%= c.name %></a>
+  <% }) %>
+</p>
+
+<% if (q) { %><p class="hint">Kết quả tìm kiếm cho: <strong><%= q %></strong></p><% } %>
+
+<% if (items.length === 0) { %>
+  <p>Không tìm thấy bài viết phù hợp.</p>
+<% } else { %>
+  <% items.forEach((a) => { %>
+    <article class="article-card">
+      <% if (a.coverImage) { %><img src="/uploads/<%= a.coverImage %>" alt="" class="thumb"><% } %>
+      <div>
+        <h2><a href="/articles/<%= encodeURIComponent(a.slug) %>"><%= a.title %></a></h2>
+        <p class="meta">
+          <%= a.category ? a.category.name : '' %> |
+          <%= a.author ? a.author.fullName : '' %> |
+          <%= a.publishedAt ? new Date(a.publishedAt).toLocaleDateString('vi-VN') : '' %>
+        </p>
+        <% if (a.summary) { %><p><%= a.summary %></p><% } %>
+      </div>
+    </article>
+  <% }) %>
+
+  <% if (paging.totalPages > 1) { %>
+    <div class="pager">
+      <% if (paging.page > 1) { %><a href="<%= buildUrl(paging.page - 1) %>">Trước</a><% } %>
+      <span>Trang <%= paging.page %> / <%= paging.totalPages %></span>
+      <% if (paging.page < paging.totalPages) { %><a href="<%= buildUrl(paging.page + 1) %>">Sau</a><% } %>
+    </div>
+  <% } %>
+<% } %>
 <%- include('../partials/footer') %>

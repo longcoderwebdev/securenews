@@ -1,0 +1,16 @@
+<%- include('../partials/header') %>
+<article>
+  <h1><%= article.title %></h1>
+  <p class="meta">
+    <%= article.category ? article.category.name : '' %> |
+    <%= article.author ? article.author.fullName : '' %> |
+    <%= article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('vi-VN') : '' %>
+  </p>
+  <% if (article.coverImage) { %>
+    <img src="/uploads/<%= article.coverImage %>" alt="Ảnh bìa" class="cover">
+  <% } %>
+  <% if (article.summary) { %><p><em><%= article.summary %></em></p><% } %>
+  <div class="article-body"><%- safeContent %></div>
+</article>
+<p><a href="/articles">Quay lại danh sách</a></p>
+<%- include('../partials/footer') %>

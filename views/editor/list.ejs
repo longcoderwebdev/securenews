@@ -1,0 +1,54 @@
+<%- include('../partials/header') %>
+<h1>Bài viết của tôi</h1>
+<p><a href="/editor/articles/new">Soạn bài mới</a></p>
+<p>
+  Lọc:
+  <a href="/editor/articles">Tất cả</a> |
+  <a href="/editor/articles?status=draft">Nháp</a> |
+  <a href="/editor/articles?status=pending">Chờ duyệt</a> |
+  <a href="/editor/articles?status=published">Đã đăng</a> |
+  <a href="/editor/articles?status=rejected">Bị từ chối</a>
+</p>
+
+<% if (items.length === 0) { %>
+  <p>Chưa có bài viết nào.</p>
+<% } else { %>
+  <table>
+    <thead>
+      <tr><th>Tiêu đề</th><th>Trạng thái</th><th>Cập nhật</th><th>Thao tác</th></tr>
+    </thead>
+    <tbody>
+      <% items.forEach((a) => { %>
+        <tr>
+          <td><%= a.title %></td>
+          <td>
+            <span class="badge badge-<%= a.status %>"><%= statusLabels[a.status] %></span>
+            <% if (a.status === 'rejected' && a.rejectReason) { %>
+              <p class="hint">Lý do: <%= a.rejectReason %></p>
+            <% } %>
+          </td>
+          <td><%= new Date(a.updatedAt).toLocaleString('vi-VN') %></td>
+          <td class="actions">
+            <% if (a.status === 'draft' || a.status === 'rejected') { %>
+              <a href="/editor/articles/<%= a._id %>/edit">Sửa</a>
+              <form method="post" action="/editor/articles/<%= a._id %>/submit" class="inline" data-confirm="Gửi bài này để quản trị viên duyệt?">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit">Gửi duyệt</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <% if (paging.totalPages > 1) { %>
+    <% const qs = (p) => '?' + (status ? 'status=' + encodeURIComponent(status) + '&' : '') + 'page=' + p; %>
+    <div class="pager">
+      <% if (paging.page > 1) { %><a href="/editor/articles<%= qs(paging.page - 1) %>">Trước</a><% } %>
+      <span>Trang <%= paging.page %> / <%= paging.totalPages %></span>
+      <% if (paging.page < paging.totalPages) { %><a href="/editor/articles<%= qs(paging.page + 1) %>">Sau</a><% } %>
+    </div>
+  <% } %>
+<% } %>
+<%- include('../partials/footer') %>

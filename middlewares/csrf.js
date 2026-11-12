@@ -8,7 +8,7 @@ function csrf(req, res, next) {
   res.locals.csrfToken = req.session.csrfToken;
   if (SAFE_METHODS.has(req.method)) return next();
 
-  const sent = req.body && (req.body._csrf || req.get('x-csrf-token'));
+    const sent = (req.body && req.body._csrf) || req.get('x-csrf-token') || req.query._csrf;
   const expected = req.session.csrfToken;
   const valid =
     typeof sent === 'string' &&

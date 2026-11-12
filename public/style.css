@@ -11,3 +11,4 @@ button { margin-top: 16px; padding: 8px 16px; }
 .flash { max-width: 480px; margin: 12px auto; padding: 10px 14px; border-radius: 6px; }
 .flash-success { background: #e6f4ea; color: #1e6b34; }
 .flash-error { background: #fdecea; color: #b00020; }
+

@@ -1,0 +1,33 @@
+<%- include('../partials/header') %>
+<h1>Bài chờ duyệt</h1>
+
+<% if (items.length === 0) { %>
+  <p>Hiện không có bài nào chờ duyệt.</p>
+<% } else { %>
+  <table>
+    <thead>
+      <tr><th>Tiêu đề</th><th>Tác giả</th><th>Danh mục</th><th>Gửi lúc</th><th>Thao tác</th></tr>
+    </thead>
+    <tbody>
+      <% items.forEach((a) => { %>
+        <tr>
+          <td><%= a.title %></td>
+          <td><%= a.author ? a.author.fullName : '(đã xóa)' %></td>
+          <td><%= a.category ? a.category.name : '(đã xóa)' %></td>
+          <td><%= a.submittedAt ? new Date(a.submittedAt).toLocaleString('vi-VN') : '' %></td>
+          <td><a href="/admin/review/<%= a._id %>">Xem và duyệt</a></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <% if (paging.totalPages > 1) { %>
+    <div class="pager">
+      <% if (paging.page > 1) { %><a href="/admin/review?page=<%= paging.page - 1 %>">Trước</a><% } %>
+      <span>Trang <%= paging.page %> / <%= paging.totalPages %></span>
+      <% if (paging.page < paging.totalPages) { %><a href="/admin/review?page=<%= paging.page + 1 %>">Sau</a><% } %>
+    </div>
+  <% } %>
+<% } %>
+<p><a href="/admin">Về bảng điều khiển</a></p>
+<%- include('../partials/footer') %>
