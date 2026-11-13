@@ -4,16 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= status %> - <%= heading %> - SecureNews</title>
+  <link rel="stylesheet" href="/vendor/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<main class="error-page">
-  <p class="error-code"><%= status %></p>
-  <h1><%= heading %></h1>
-  <% if (message) { %><p><%= message %></p><% } %>
-  <p class="hint"><%= hint %></p>
-  <% if (requestId) { %><p class="hint">Mã tham chiếu: <code><%= requestId %></code></p><% } %>
-  <p><a href="/">Về trang chủ</a></p>
+<main class="container text-center py-5">
+  <p class="error-code mb-2"><%= status %></p>
+  <h1 class="h3"><%= heading %></h1>
+  <% if (message) { %><p class="lead"><%= message %></p><% } %>
+  <p class="text-muted"><%= hint %></p>
+  <% if (requestId) { %><p class="text-muted small">Mã tham chiếu: <code><%= requestId %></code></p><% } %>
+  <a class="btn btn-primary" href="/">Về trang chủ</a>
 </main>
 </body>
 </html>

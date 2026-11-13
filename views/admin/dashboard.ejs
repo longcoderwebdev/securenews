@@ -1,11 +1,26 @@
-<%- include('../partials/header') %>
-<h1>Bảng điều khiển quản trị</h1>
-<p>Xin chào <%= currentUser.fullName %>. Các chức năng quản trị sẽ được bổ sung dần.</p>
-<ul>
-  <li><a href="/admin/review">Duyệt bài viết</a></li>
-  <li><a href="/admin/categories">Quản lý danh mục</a></li>
-  <li><a href="/admin/users">Quản lý người dùng</a></li>
-  <li><a href="/admin/audit-logs">Nhật ký hoạt động</a></li>
-  <li><a href="/admin/backups">Sao lưu và phục hồi</a></li>
-</ul>
-<%- include('../partials/footer') %>
+<%- include('../partials/panel-header') %>
+<h1 class="h3 mb-1">Bảng điều khiển quản trị</h1>
+<p class="text-muted mb-4">Xin chào <%= currentUser.fullName %>.</p>
+<%
+  const cards = [
+    { href: '/admin/review', title: 'Duyệt bài viết', text: 'Xem các bài đang chờ, duyệt hoặc từ chối kèm lý do.' },
+    { href: '/admin/categories', title: 'Danh mục', text: 'Thêm, sửa, xóa danh mục bài viết.' },
+    { href: '/admin/users', title: 'Người dùng', text: 'Đổi vai trò, khóa hoặc mở khóa tài khoản.' },
+    { href: '/admin/audit-logs', title: 'Nhật ký hoạt động', text: 'Tra cứu mọi hành động quan trọng của hệ thống.' },
+    { href: '/admin/backups', title: 'Sao lưu và phục hồi', text: 'Sao lưu mã hóa, kiểm tra toàn vẹn, phục hồi dữ liệu.' },
+  ];
+%>
+<div class="row g-3">
+  <% cards.forEach((c) => { %>
+    <div class="col-md-6 col-xl-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h2 class="h5"><%= c.title %></h2>
+          <p class="text-muted"><%= c.text %></p>
+          <a href="<%= c.href %>" class="btn btn-outline-primary btn-sm stretched-link">Mở</a>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</div>
+<%- include('../partials/panel-footer') %>

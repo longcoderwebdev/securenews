@@ -4,25 +4,45 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= title %> - SecureNews</title>
+  <link rel="stylesheet" href="/vendor/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-<nav class="nav">
-  <a href="/" class="brand">SecureNews</a>
-  <% if (currentUser) { %>
-    <% if (currentUser.role === 'admin') { %><a href="/admin">Quản trị</a><% } %>
-    <% if (currentUser.role === 'editor') { %><a href="/editor/articles">Bài viết của tôi</a><% } %>
-    <a href="/profile"><%= currentUser.fullName %> (<%= currentUser.role %>)</a>
-    <form method="post" action="/auth/logout" class="inline">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button type="submit">Đăng xuất</button>
-    </form>
-  <% } else { %>
-    <a href="/auth/login">Đăng nhập</a>
-    <a href="/auth/register">Đăng ký</a>
-  <% } %>
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">SecureNews</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+            aria-controls="mainNav" aria-expanded="false" aria-label="Mở menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="/articles">Tin tức</a></li>
+        <% if (currentUser && currentUser.role === 'admin') { %>
+          <li class="nav-item"><a class="nav-link" href="/admin">Quản trị</a></li>
+        <% } %>
+        <% if (currentUser && currentUser.role === 'editor') { %>
+          <li class="nav-item"><a class="nav-link" href="/editor/articles">Bài viết của tôi</a></li>
+        <% } %>
+      </ul>
+      <ul class="navbar-nav align-items-lg-center gap-lg-2">
+        <% if (currentUser) { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/profile"><%= currentUser.fullName %> <span class="badge text-bg-secondary"><%= currentUser.role %></span></a>
+          </li>
+          <li class="nav-item">
+            <form method="post" action="/auth/logout" class="d-inline">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit" class="btn btn-outline-light btn-sm">Đăng xuất</button>
+            </form>
+          </li>
+        <% } else { %>
+          <li class="nav-item"><a class="nav-link" href="/auth/login">Đăng nhập</a></li>
+          <li class="nav-item"><a class="btn btn-primary btn-sm" href="/auth/register">Đăng ký</a></li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
 </nav>
-<% if (flash) { %>
-  <div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
-<% } %>
-<main>
+<% if (flash) { %><div class="container mt-3"><%- include('flash') %></div><% } %>
+<main class="container py-4 flex-grow-1">
