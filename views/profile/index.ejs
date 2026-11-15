@@ -1,37 +1,67 @@
 <%- include('../partials/header') %>
-<h1>Hồ sơ cá nhân</h1>
-<p class="meta">
-  Email: <%= profile.email %><br>
-  Vai trò: <%= profile.role %><br>
-  Tham gia: <%= new Date(profile.createdAt).toLocaleDateString('vi-VN') %>
-</p>
+<h1 class="h3 mb-4">Hồ sơ cá nhân</h1>
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted mb-3">Tài khoản</h2>
+        <dl class="mb-0">
+          <dt>Email</dt><dd><%= profile.email %></dd>
+          <dt>Vai trò</dt><dd><span class="badge text-bg-secondary"><%= profile.role %></span></dd>
+          <dt>Tham gia</dt><dd><%= new Date(profile.createdAt).toLocaleDateString('vi-VN') %></dd>
+          <dt>Đăng nhập gần nhất</dt>
+          <dd class="mb-0"><%= profile.lastLoginAt ? new Date(profile.lastLoginAt).toLocaleString('vi-VN') : 'Chưa có' %></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
 
-<h2>Thông tin cá nhân</h2>
-<form method="post" action="/profile" novalidate>
-  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-  <label for="fullName">Họ tên</label>
-  <input id="fullName" name="fullName" type="text" value="<%= values.fullName || '' %>" required>
-  <% if (errors.fullName) { %><p class="error"><%= errors.fullName %></p><% } %>
-  <button type="submit">Lưu họ tên</button>
-</form>
+  <div class="col-lg-8">
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Thông tin cá nhân</h2>
+        <form method="post" action="/profile" novalidate>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <div class="mb-3">
+            <label for="fullName" class="form-label">Họ tên</label>
+            <input id="fullName" name="fullName" type="text" class="form-control <%= errors.fullName ? 'is-invalid' : '' %>" value="<%= values.fullName || '' %>" required>
+            <% if (errors.fullName) { %><div class="invalid-feedback"><%= errors.fullName %></div><% } %>
+          </div>
+          <button type="submit" class="btn btn-primary">Lưu họ tên</button>
+        </form>
+      </div>
+    </div>
 
-<h2>Đổi mật khẩu</h2>
-<form method="post" action="/profile/password" novalidate>
-  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Đổi mật khẩu</h2>
+        <form method="post" action="/profile/password" novalidate>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-  <label for="currentPassword">Mật khẩu hiện tại</label>
-  <input id="currentPassword" name="currentPassword" type="password" autocomplete="current-password" required>
-  <% if (errors.currentPassword) { %><p class="error"><%= errors.currentPassword %></p><% } %>
+          <div class="mb-3">
+            <label for="currentPassword" class="form-label">Mật khẩu hiện tại</label>
+            <input id="currentPassword" name="currentPassword" type="password" class="form-control <%= errors.currentPassword ? 'is-invalid' : '' %>" autocomplete="current-password" required>
+            <% if (errors.currentPassword) { %><div class="invalid-feedback"><%= errors.currentPassword %></div><% } %>
+          </div>
 
-  <label for="newPassword">Mật khẩu mới (10 đến 72 ký tự, có chữ và số)</label>
-  <input id="newPassword" name="newPassword" type="password" autocomplete="new-password" required>
-  <% if (errors.newPassword) { %><p class="error"><%= errors.newPassword %></p><% } %>
+          <div class="mb-3">
+            <label for="newPassword" class="form-label">Mật khẩu mới</label>
+            <input id="newPassword" name="newPassword" type="password" class="form-control <%= errors.newPassword ? 'is-invalid' : '' %>" autocomplete="new-password" required>
+            <% if (errors.newPassword) { %><div class="invalid-feedback"><%= errors.newPassword %></div><% } %>
+            <div class="form-text">10 đến 72 ký tự, có cả chữ và số, khác mật khẩu hiện tại.</div>
+          </div>
 
-  <label for="confirmPassword">Nhập lại mật khẩu mới</label>
-  <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required>
-  <% if (errors.confirmPassword) { %><p class="error"><%= errors.confirmPassword %></p><% } %>
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Nhập lại mật khẩu mới</label>
+            <input id="confirmPassword" name="confirmPassword" type="password" class="form-control <%= errors.confirmPassword ? 'is-invalid' : '' %>" autocomplete="new-password" required>
+            <% if (errors.confirmPassword) { %><div class="invalid-feedback"><%= errors.confirmPassword %></div><% } %>
+          </div>
 
-  <button type="submit">Đổi mật khẩu</button>
-</form>
-<p class="hint">Sau khi đổi mật khẩu, các thiết bị khác sẽ bị đăng xuất.</p>
+          <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+          <p class="form-text mt-2 mb-0">Sau khi đổi mật khẩu, các thiết bị khác sẽ bị đăng xuất.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 <%- include('../partials/footer') %>

@@ -1,25 +1,42 @@
 <%- include('../partials/header') %>
-<h1>Đăng ký tài khoản</h1>
-<form method="post" action="/auth/register" novalidate>
-  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="h4 mb-3">Đăng ký tài khoản</h1>
+        <form method="post" action="/auth/register" novalidate>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-  <label for="fullName">Họ tên</label>
-  <input id="fullName" name="fullName" type="text" value="<%= values.fullName || '' %>" required>
-  <% if (errors.fullName) { %><p class="error"><%= errors.fullName %></p><% } %>
+          <div class="mb-3">
+            <label for="fullName" class="form-label">Họ tên</label>
+            <input id="fullName" name="fullName" type="text" class="form-control <%= errors.fullName ? 'is-invalid' : '' %>" value="<%= values.fullName || '' %>" required>
+            <% if (errors.fullName) { %><div class="invalid-feedback"><%= errors.fullName %></div><% } %>
+          </div>
 
-  <label for="email">Email</label>
-  <input id="email" name="email" type="email" value="<%= values.email || '' %>" autocomplete="username" required>
-  <% if (errors.email) { %><p class="error"><%= errors.email %></p><% } %>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input id="email" name="email" type="email" class="form-control <%= errors.email ? 'is-invalid' : '' %>" value="<%= values.email || '' %>" autocomplete="username" required>
+            <% if (errors.email) { %><div class="invalid-feedback"><%= errors.email %></div><% } %>
+          </div>
 
-  <label for="password">Mật khẩu (10 đến 72 ký tự, có chữ và số)</label>
-  <input id="password" name="password" type="password" autocomplete="new-password" required>
-  <% if (errors.password) { %><p class="error"><%= errors.password %></p><% } %>
+          <div class="mb-3">
+            <label for="password" class="form-label">Mật khẩu</label>
+            <input id="password" name="password" type="password" class="form-control <%= errors.password ? 'is-invalid' : '' %>" autocomplete="new-password" required>
+            <% if (errors.password) { %><div class="invalid-feedback"><%= errors.password %></div><% } %>
+            <div class="form-text">10 đến 72 ký tự, có cả chữ và số.</div>
+          </div>
 
-  <label for="confirmPassword">Nhập lại mật khẩu</label>
-  <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required>
-  <% if (errors.confirmPassword) { %><p class="error"><%= errors.confirmPassword %></p><% } %>
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Nhập lại mật khẩu</label>
+            <input id="confirmPassword" name="confirmPassword" type="password" class="form-control <%= errors.confirmPassword ? 'is-invalid' : '' %>" autocomplete="new-password" required>
+            <% if (errors.confirmPassword) { %><div class="invalid-feedback"><%= errors.confirmPassword %></div><% } %>
+          </div>
 
-  <button type="submit">Đăng ký</button>
-</form>
-<p>Đã có tài khoản? <a href="/auth/login">Đăng nhập</a></p>
+          <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
+        </form>
+      </div>
+      <div class="card-footer text-center small">Đã có tài khoản? <a href="/auth/login">Đăng nhập</a></div>
+    </div>
+  </div>
+</div>
 <%- include('../partials/footer') %>

@@ -1,49 +1,78 @@
 <%- include('../partials/header') %>
-<article>
-  <h1><%= article.title %></h1>
-  <p class="meta">
-    <%= article.category ? article.category.name : '' %> |
-    <%= article.author ? article.author.fullName : '' %> |
-    <%= article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('vi-VN') : '' %>
-  </p>
-  <% if (article.coverImage) { %>
-    <img src="/uploads/<%= article.coverImage %>" alt="Ảnh bìa" class="cover">
-  <% } %>
-  <% if (article.summary) { %><p><em><%= article.summary %></em></p><% } %>
-  <div class="article-body"><%- safeContent %></div>
-</article>
+<div class="row justify-content-center">
+  <div class="col-lg-9 col-xl-8">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <% if (article.category) { %>
+          <li class="breadcrumb-item"><a href="/articles?category=<%= encodeURIComponent(article.category.slug) %>"><%= article.category.name %></a></li>
+        <% } %>
+        <li class="breadcrumb-item active" aria-current="page">Bài viết</li>
+      </ol>
+    </nav>
 
-<section class="comments">
-  <h2>Bình luận (<%= commentTotal %>)</h2>
+    <article class="card mb-4">
+      <div class="card-body p-4 p-md-5">
+        <h1 class="display-6 fw-bold mb-3"><%= article.title %></h1>
+        <div class="d-flex flex-wrap align-items-center gap-2 text-muted mb-4">
+          <span class="avatar" aria-hidden="true"><%= (article.author ? article.author.fullName : '?').trim().charAt(0).toUpperCase() %></span>
+          <span><%= article.author ? article.author.fullName : '' %></span>
+          <span aria-hidden="true">&middot;</span>
+          <% if (article.publishedAt) { %>
+            <time datetime="<%= new Date(article.publishedAt).toISOString() %>"><%= new Date(article.publishedAt).toLocaleDateString('vi-VN') %></time>
+          <% } %>
+        </div>
+        <% if (article.coverImage) { %>
+          <img src="/uploads/<%= article.coverImage %>" alt="Ảnh bìa bài viết" class="cover mb-4">
+        <% } %>
+        <% if (article.summary) { %><p class="lead fst-italic"><%= article.summary %></p><% } %>
+        <div class="article-body"><%- safeContent %></div>
+      </div>
+    </article>
 
-  <% if (currentUser) { %>
-    <form method="post" action="/articles/<%= encodeURIComponent(article.slug) %>/comments" novalidate>
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <label for="content">Viết bình luận (2 đến 1000 ký tự)</label>
-      <textarea id="content" name="content" rows="3" maxlength="1000" required></textarea>
-      <button type="submit">Gửi bình luận</button>
-    </form>
-  <% } else { %>
-    <p><a href="/auth/login">Đăng nhập</a> để bình luận.</p>
-  <% } %>
+    <section id="comments" aria-labelledby="comments-title">
+      <h2 id="comments-title" class="h4 mb-3">Bình luận (<%= commentTotal %>)</h2>
 
-  <% if (comments.length === 0) { %>
-    <p class="hint">Chưa có bình luận nào.</p>
-  <% } %>
-
-  <% comments.forEach((c) => { %>
-    <div class="comment">
-      <p class="meta"><%= c.user ? c.user.fullName : '(đã xóa)' %> | <%= new Date(c.createdAt).toLocaleString('vi-VN') %></p>
-      <p class="comment-text"><%= c.content %></p>
-      <% if (currentUser && (currentUser.role === 'editor' || currentUser.role === 'admin')) { %>
-        <form method="post" action="/comments/<%= c._id %>/hide" class="inline" data-confirm="Ẩn bình luận này?">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <button type="submit">Ẩn</button>
-        </form>
+      <% if (currentUser) { %>
+        <div class="card mb-4">
+          <div class="card-body">
+            <form method="post" action="/articles/<%= encodeURIComponent(article.slug) %>/comments" novalidate>
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <label for="content" class="form-label">Viết bình luận (2 đến 1000 ký tự)</label>
+              <textarea id="content" name="content" rows="3" maxlength="1000" class="form-control mb-3" required></textarea>
+              <button type="submit" class="btn btn-primary">Gửi bình luận</button>
+            </form>
+          </div>
+        </div>
+      <% } else { %>
+        <div class="alert alert-secondary"><a href="/auth/login">Đăng nhập</a> để bình luận.</div>
       <% } %>
-    </div>
-  <% }) %>
-</section>
 
-<p><a href="/articles">Quay lại danh sách</a></p>
+      <% if (comments.length === 0) { %>
+        <p class="text-muted">Chưa có bình luận nào.</p>
+      <% } %>
+
+      <% comments.forEach((c) => { %>
+        <div class="d-flex gap-3 mb-3">
+          <span class="avatar" aria-hidden="true"><%= (c.user ? c.user.fullName : '?').trim().charAt(0).toUpperCase() %></span>
+          <div class="flex-grow-1">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+              <strong><%= c.user ? c.user.fullName : '(đã xóa)' %></strong>
+              <span class="small text-muted"><%= new Date(c.createdAt).toLocaleString('vi-VN') %></span>
+            </div>
+            <p class="comment-text mb-1"><%= c.content %></p>
+            <% if (currentUser && (currentUser.role === 'editor' || currentUser.role === 'admin')) { %>
+              <form method="post" action="/comments/<%= c._id %>/hide" class="d-inline" data-confirm="Ẩn bình luận này?">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-link btn-sm text-danger p-0">Ẩn bình luận</button>
+              </form>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
+    </section>
+
+    <p class="mt-4"><a href="/articles">&larr; Quay lại danh sách</a></p>
+  </div>
+</div>
 <%- include('../partials/footer') %>

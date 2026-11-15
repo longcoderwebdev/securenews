@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> - SecureNews</title>
+  <link rel="stylesheet" href="/vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<%
+  const path = typeof currentPath === 'string' ? currentPath : '';
+  const adminItems = [
+    { href: '/admin', label: 'Tổng quan', active: (p) => p === '/admin' },
+    { href: '/admin/review', label: 'Duyệt bài viết', active: (p) => p.startsWith('/admin/review') },
+    { href: '/admin/categories', label: 'Danh mục', active: (p) => p.startsWith('/admin/categories') },
+    { href: '/admin/users', label: 'Người dùng', active: (p) => p.startsWith('/admin/users') },
+    { href: '/admin/audit-logs', label: 'Nhật ký hoạt động', active: (p) => p.startsWith('/admin/audit-logs') },
+    { href: '/admin/backups', label: 'Sao lưu và phục hồi', active: (p) => p.startsWith('/admin/backups') },
+  ];
+  const editorItems = [
+    { href: '/editor/articles', label: 'Bài viết của tôi', active: (p) => p.startsWith('/editor/articles') && p !== '/editor/articles/new' },
+    { href: '/editor/articles/new', label: 'Soạn bài mới', active: (p) => p === '/editor/articles/new' },
+  ];
+  const items = currentUser && currentUser.role === 'admin' ? adminItems : editorItems;
+%>
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="/">SecureNews</a>
+    <div class="d-flex align-items-center gap-2">
+      <% if (currentUser) { %>
+        <a class="link-light text-decoration-none small" href="/profile"><%= currentUser.fullName %> <span class="badge text-bg-secondary"><%= currentUser.role %></span></a>
+        <form method="post" action="/auth/logout" class="d-inline">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button type="submit" class="btn btn-outline-light btn-sm">Đăng xuất</button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+</nav>
+<div class="container-fluid">
+  <div class="row">
+    <aside class="col-md-3 col-lg-2 bg-white border-end py-3 sidebar">
+      <div class="list-group list-group-flush">
+        <% items.forEach((item) => { %>
+          <a href="<%= item.href %>" class="list-group-item list-group-item-action <%= item.active(path) ? 'active' : '' %>"<%- item.active(path) ? ' aria-current="page"' : '' %>><%= item.label %></a>
+        <% }) %>
+      </div>
+    </aside>
+    <main class="col-md-9 col-lg-10 px-md-4 py-4">
+      <% if (flash) { %><%- include('flash') %><% } %>
