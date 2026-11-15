@@ -1,45 +1,84 @@
 <%- include('../partials/header') %>
-<h1>Tin tức</h1>
+<section class="hero">
+  <h1 class="display-6 fw-bold mb-2">Tin tức SecureNews</h1>
+  <p class="lead mb-4">Thông báo, bài viết chuyên môn và hướng dẫn an toàn thông tin của tổ chức.</p>
+  <form method="get" action="/articles" class="row g-2" role="search">
+    <div class="col-12 col-md">
+      <label for="q" class="visually-hidden">Từ khóa tìm kiếm</label>
+      <input id="q" type="search" name="q" value="<%= q %>" class="form-control form-control-lg" placeholder="Tìm bài viết theo tiêu đề hoặc tóm tắt" maxlength="100">
+    </div>
+    <% if (activeCategory) { %><input type="hidden" name="category" value="<%= activeCategory %>"><% } %>
+    <div class="col-12 col-md-auto">
+      <button type="submit" class="btn btn-light btn-lg w-100">Tìm kiếm</button>
+    </div>
+  </form>
+</section>
 
-<form method="get" action="/articles" class="search" role="search">
-  <input type="search" name="q" value="<%= q %>" placeholder="Tìm bài viết" maxlength="100">
-  <% if (activeCategory) { %><input type="hidden" name="category" value="<%= activeCategory %>"><% } %>
-  <button type="submit">Tìm</button>
-</form>
+<nav aria-label="Danh mục" class="mb-4">
+  <ul class="nav nav-pills gap-2 flex-wrap">
+    <li class="nav-item">
+      <a class="nav-link <%= activeCategory ? '' : 'active' %>" href="/articles"<%- activeCategory ? '' : ' aria-current="page"' %>>Tất cả</a>
+    </li>
+    <% categories.forEach((c) => { %>
+      <li class="nav-item">
+        <a class="nav-link <%= c.slug === activeCategory ? 'active' : '' %>" href="/articles?category=<%= encodeURIComponent(c.slug) %>"<%- c.slug === activeCategory ? ' aria-current="page"' : '' %>><%= c.name %></a>
+      </li>
+    <% }) %>
+  </ul>
+</nav>
 
-<p class="chips">
-  <a href="/articles" class="chip <%= activeCategory ? '' : 'chip-active' %>">Tất cả</a>
-  <% categories.forEach((c) => { %>
-    <a href="/articles?category=<%= encodeURIComponent(c.slug) %>" class="chip <%= c.slug === activeCategory ? 'chip-active' : '' %>"><%= c.name %></a>
-  <% }) %>
-</p>
-
-<% if (q) { %><p class="hint">Kết quả tìm kiếm cho: <strong><%= q %></strong></p><% } %>
+<% if (q) { %>
+  <p class="text-muted">Kết quả tìm kiếm cho: <strong><%= q %></strong> (<%= paging.total %> bài)</p>
+<% } %>
 
 <% if (items.length === 0) { %>
-  <p>Không tìm thấy bài viết phù hợp.</p>
+  <div class="text-center py-5">
+    <p class="h5">Không tìm thấy bài viết phù hợp.</p>
+    <p class="text-muted">Hãy thử từ khóa khác hoặc chọn danh mục khác.</p>
+    <a href="/articles" class="btn btn-outline-primary">Xem tất cả bài viết</a>
+  </div>
 <% } else { %>
-  <% items.forEach((a) => { %>
-    <article class="article-card">
-      <% if (a.coverImage) { %><img src="/uploads/<%= a.coverImage %>" alt="" class="thumb"><% } %>
-      <div>
-        <h2><a href="/articles/<%= encodeURIComponent(a.slug) %>"><%= a.title %></a></h2>
-        <p class="meta">
-          <%= a.category ? a.category.name : '' %> |
-          <%= a.author ? a.author.fullName : '' %> |
-          <%= a.publishedAt ? new Date(a.publishedAt).toLocaleDateString('vi-VN') : '' %>
-        </p>
-        <% if (a.summary) { %><p><%= a.summary %></p><% } %>
+  <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+    <% items.forEach((a) => { %>
+      <div class="col">
+        <article class="article-card">
+          <div class="card h-100">
+            <% if (a.coverImage) { %>
+              <img src="/uploads/<%= a.coverImage %>" alt="" class="card-img-top article-thumb" loading="lazy">
+            <% } else { %>
+              <div class="cover-placeholder card-img-top" aria-hidden="true">SecureNews</div>
+            <% } %>
+            <div class="card-body d-flex flex-column">
+              <% if (a.category) { %>
+                <p class="mb-2"><span class="badge text-bg-primary"><%= a.category.name %></span></p>
+              <% } %>
+              <h2 class="h5 article-title">
+                <a class="stretched-link" href="/articles/<%= encodeURIComponent(a.slug) %>"><%= a.title %></a>
+              </h2>
+              <% if (a.summary) { %><p class="text-muted line-clamp-3"><%= a.summary %></p><% } %>
+              <p class="small text-muted mt-auto mb-0">
+                <%= a.author ? a.author.fullName : '' %> &middot;
+                <%= a.publishedAt ? new Date(a.publishedAt).toLocaleDateString('vi-VN') : '' %>
+              </p>
+            </div>
+          </div>
+        </article>
       </div>
-    </article>
-  <% }) %>
+    <% }) %>
+  </div>
 
   <% if (paging.totalPages > 1) { %>
-    <div class="pager">
-      <% if (paging.page > 1) { %><a href="<%= buildUrl(paging.page - 1) %>">Trước</a><% } %>
-      <span>Trang <%= paging.page %> / <%= paging.totalPages %></span>
-      <% if (paging.page < paging.totalPages) { %><a href="<%= buildUrl(paging.page + 1) %>">Sau</a><% } %>
-    </div>
+    <nav aria-label="Phân trang" class="mt-4">
+      <ul class="pagination justify-content-center">
+        <li class="page-item <%= paging.page > 1 ? '' : 'disabled' %>">
+          <% if (paging.page > 1) { %><a class="page-link" href="<%= buildUrl(paging.page - 1) %>">Trước</a><% } else { %><span class="page-link">Trước</span><% } %>
+        </li>
+        <li class="page-item disabled"><span class="page-link">Trang <%= paging.page %> / <%= paging.totalPages %></span></li>
+        <li class="page-item <%= paging.page < paging.totalPages ? '' : 'disabled' %>">
+          <% if (paging.page < paging.totalPages) { %><a class="page-link" href="<%= buildUrl(paging.page + 1) %>">Sau</a><% } else { %><span class="page-link">Sau</span><% } %>
+        </li>
+      </ul>
+    </nav>
   <% } %>
 <% } %>
 <%- include('../partials/footer') %>
